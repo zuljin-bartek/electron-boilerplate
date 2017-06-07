@@ -2,7 +2,7 @@
   "name": "electron-boilerplate",
   "productName": "Electron Boilerplate",
   "description": "Starter for your Electron application",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Mr. Gumby <mr.gumby@example.com>",
   "copyright": "© 2017, Gumby inc.",
   "repository": "https://github.com/zuljin-bartek/electron-boilerplate",
@@ -16,7 +16,13 @@
       "node_modules/**/*",
       "package.json"
     ],
-    "publish": null
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "zuljin-bartek",
+        "repo": "electron-boilerplate"
+      }
+    ]
   },
   "scripts": {
     "postinstall": "install-app-deps",
