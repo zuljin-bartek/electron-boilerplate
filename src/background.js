@@ -11,20 +11,11 @@ import { editMenuTemplate } from './main-process/menu/edit_menu_template';
 import { helpMenu } from './main-process/menu/help_menu';
 import createWindow from './helpers/window';
 import { autoUpdater } from './helpers/updater';
-// import { autoUpdater } from 'electron-updater';
 import { updateConfig, readConfig } from './helpers/config';
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
 import env from './env';
-
-const setApplicationMenu = () => {
-  const menus = [editMenuTemplate, helpMenu];
-  if (env.name !== 'production') {
-    menus.push(devMenuTemplate);
-  }
-  Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
-};
 
 // Save userData in separate folders for each environment.
 // Thanks to this you can use production and development versions of the app
@@ -34,8 +25,18 @@ if (env.name !== 'production') {
   app.setPath('userData', `${userDataPath} (${env.name})`);
 }
 
+const setApplicationMenu = () => {
+  const menus = [editMenuTemplate, helpMenu];
+  if (env.name !== 'production') {
+    menus.push(devMenuTemplate);
+  }
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
+};
+
 app.on('ready', () => {
   setApplicationMenu();
+  // Initialize updater event handles (it also includes chaning menu to display progress).
+  autoUpdater.initialize();
 
   const mainWindow = createWindow('main', {
     width: 1000,
@@ -48,13 +49,28 @@ app.on('ready', () => {
     slashes: true,
   }));
 
-  // Inform new window about updates or not if they are disabled.
+  // Read configuration and update menu/start updates.
   var configuration = readConfig();
+  var menu = Menu.getApplicationMenu();
+  if (!menu) return;
+  menu.items.forEach(function (item) {
+    if (item.submenu) {
+      item.submenu.items.forEach(function (item) {
+        if (item.key === 'autoUpdate') {
+          item.checked = configuration.autoUpdate;
+          item.click = function() {
+            this.checked = !this.checked;
+            configuration.autoUpdate = this.checked;
+            console.log("new click", updateConfig(configuration));
+          };
+        }
+      });
+    }
+  });
   if (configuration.autoUpdate) { 
     mainWindow.webContents.on('did-finish-load', () => {
       // Run updater with reference to window that will be notified about updates.
-      // autoUpdater.checkForUpdates();
-      autoUpdater.initialize();  
+      autoUpdater.checkForUpdates();
     });
   }
 

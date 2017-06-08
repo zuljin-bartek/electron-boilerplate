@@ -9,6 +9,14 @@ let template = {
   submenu: [{
     label: `Version ${version}`,
     enabled: false
+  }, {
+    label: 'Auto-Update',
+    type: 'checkbox',
+    checked: false,
+    key: 'autoUpdate'
+    // click: (elem) => {
+    //   console.log("clicked?", elem.checked, elem);
+    // }
   }]
 };
 
@@ -18,10 +26,11 @@ function addUpdateMenuItems (items, position) {
   let updateItems = [{
     label: 'Checking for Update',
     enabled: false,
+    visible: false,
     key: 'checkingForUpdate'
   }, {
     label: 'Check for Update',
-    visible: false,
+    visible: true,
     key: 'checkForUpdate',
     click: function () {
       autoUpdater.checkForUpdates();
