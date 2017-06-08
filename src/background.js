@@ -6,10 +6,11 @@
 import path from 'path';
 import url from 'url';
 import { app, Menu } from 'electron';
-import { devMenuTemplate } from './menu/dev_menu_template';
-import { editMenuTemplate } from './menu/edit_menu_template';
+import { devMenuTemplate } from './main-process/menu/dev_menu_template';
+import { editMenuTemplate } from './main-process/menu/edit_menu_template';
+import { helpMenu } from './main-process/menu/help_menu';
 import createWindow from './helpers/window';
-import Updater from './helpers/updater';
+import './helpers/updater';
 import { updateConfig, readConfig } from './helpers/config';
 
 // Special module holding environment variables which you declared
@@ -17,7 +18,7 @@ import { updateConfig, readConfig } from './helpers/config';
 import env from './env';
 
 const setApplicationMenu = () => {
-  const menus = [editMenuTemplate];
+  const menus = [editMenuTemplate, helpMenu];
   if (env.name !== 'production') {
     menus.push(devMenuTemplate);
   }
@@ -51,7 +52,7 @@ app.on('ready', () => {
   if (configuration.autoUpdate) { 
     mainWindow.webContents.on('did-finish-load', () => {
       // Run updater with reference to window that will be notified about updates.
-      Updater(mainWindow).checkForUpdates();
+      autoUpdater.checkForUpdates();
     });
   }
 
