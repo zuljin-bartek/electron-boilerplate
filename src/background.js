@@ -11,6 +11,7 @@ import { editMenuTemplate } from './main-process/menu/edit_menu_template';
 import { helpMenu } from './main-process/menu/help_menu';
 import createWindow from './helpers/window';
 import './helpers/updater';
+import { autoUpdater } from 'electron-updater';
 import { updateConfig, readConfig } from './helpers/config';
 
 // Special module holding environment variables which you declared
