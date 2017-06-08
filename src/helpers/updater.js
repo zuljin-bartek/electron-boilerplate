@@ -1,40 +1,45 @@
 import { autoUpdater } from 'electron-updater';
-import { Menu } from 'electron';
+import { Menu, BrowserWindow } from 'electron';
 
 var state = 'checking';
 
-exports.initialize = function () {
+autoUpdater.initialize = function () {
   if (process.mas) return;
 
   autoUpdater.on('checking-for-update', function () {
+    BrowserWindow.getFocusedWindow().webContents.send('message', 'checking-for-update');
     state = 'checking';
-    exports.updateMenu();
+    updateMenu();
   });
 
   autoUpdater.on('update-available', function () {
+    BrowserWindow.getFocusedWindow().webContents.send('message', 'update-available');
     state = 'checking';
-    exports.updateMenu();
+    updateMenu();
   });
 
   autoUpdater.on('update-downloaded', function () {
+    BrowserWindow.getFocusedWindow().webContents.send('message', 'update-downloaded');
     state = 'installed';
-    exports.updateMenu();
+    updateMenu();
   });
 
   autoUpdater.on('update-not-available', function () {
+    BrowserWindow.getFocusedWindow().webContents.send('message', 'update-not-available');
     state = 'no-update';
-    exports.updateMenu();
+    updateMenu();
   });
 
   autoUpdater.on('error', function () {
+    BrowserWindow.getFocusedWindow().webContents.send('message', 'error');
     state = 'no-update';
-    exports.updateMenu();
+    updateMenu();
   });
 
   autoUpdater.checkForUpdates();
 };
 
-exports.updateMenu = function () {
+function updateMenu() {
   if (process.mas) return;
 
   var menu = Menu.getApplicationMenu();
@@ -58,6 +63,9 @@ exports.updateMenu = function () {
     }
   });
 };
+
+export { autoUpdater };
+// return autoUpdater;
 
 // export default (win) => {
 //   let Updater = autoUpdater;

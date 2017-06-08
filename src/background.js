@@ -10,8 +10,8 @@ import { devMenuTemplate } from './main-process/menu/dev_menu_template';
 import { editMenuTemplate } from './main-process/menu/edit_menu_template';
 import { helpMenu } from './main-process/menu/help_menu';
 import createWindow from './helpers/window';
-import './helpers/updater';
-import { autoUpdater } from 'electron-updater';
+import { autoUpdater } from './helpers/updater';
+// import { autoUpdater } from 'electron-updater';
 import { updateConfig, readConfig } from './helpers/config';
 
 // Special module holding environment variables which you declared
@@ -53,7 +53,8 @@ app.on('ready', () => {
   if (configuration.autoUpdate) { 
     mainWindow.webContents.on('did-finish-load', () => {
       // Run updater with reference to window that will be notified about updates.
-      autoUpdater.checkForUpdates();
+      // autoUpdater.checkForUpdates();
+      autoUpdater.initialize();  
     });
   }
 
