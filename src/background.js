@@ -10,6 +10,7 @@ import { devMenuTemplate } from './menu/dev_menu_template';
 import { editMenuTemplate } from './menu/edit_menu_template';
 import createWindow from './helpers/window';
 import Updater from './helpers/updater';
+import { updateConfig, readConfig } from './helpers/config';
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -45,7 +46,14 @@ app.on('ready', () => {
     slashes: true,
   }));
 
-  Updater(mainWindow).checkForUpdates();
+  // Inform new window about updates or not if they are disabled.
+  var configuration = readConfig();
+  if (configuration.autoUpdate) { 
+    mainWindow.webContents.on('did-finish-load', () => {
+      // Run updater with reference to window that will be notified about updates.
+      Updater(mainWindow).checkForUpdates();
+    });
+  }
 
   if (env.name === 'development') {
     mainWindow.openDevTools();

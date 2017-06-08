@@ -2,7 +2,7 @@ import {autoUpdater} from 'electron-updater';
 
 export default (win) => {
   let Updater = autoUpdater;
-  Updater.autoDownload = false;
+  
   const sendStatusToWindow = (text) => {
     win.webContents.send('message', text);
   };
