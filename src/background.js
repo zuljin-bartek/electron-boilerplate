@@ -11,7 +11,7 @@ import { editMenuTemplate } from './main-process/menu/edit_menu_template';
 import { helpMenu } from './main-process/menu/help_menu';
 import createWindow from './helpers/window';
 import { autoUpdater } from './helpers/updater';
-import { updateConfig, readConfig } from './helpers/config';
+import configManager from './helpers/config';
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -49,25 +49,26 @@ app.on('ready', () => {
     slashes: true,
   }));
 
-  // Read configuration and update menu/start updates.
-  var configuration = readConfig();
+  // Read configuration for first time and then update menu/start updates.
+  configManager.read();
+  // Handle menu updates.
   var menu = Menu.getApplicationMenu();
   if (!menu) return;
   menu.items.forEach(function (item) {
     if (item.submenu) {
       item.submenu.items.forEach(function (item) {
         if (item.key === 'autoUpdate') {
-          item.checked = configuration.autoUpdate;
+          item.checked = configManager.get().autoUpdate;
           item.click = function() {
             this.checked = !this.checked;
-            configuration.autoUpdate = this.checked;
-            console.log("new click", updateConfig(configuration));
+            configManager.update({autoUpdate: this.checked});
           };
         }
       });
     }
   });
-  if (configuration.autoUpdate) { 
+  // Start autoUpdater if its enabled.
+  if (configManager.get().autoUpdate) { 
     mainWindow.webContents.on('did-finish-load', () => {
       // Run updater with reference to window that will be notified about updates.
       autoUpdater.checkForUpdates();

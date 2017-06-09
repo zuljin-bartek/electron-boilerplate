@@ -1,12 +1,18 @@
 import { app } from 'electron';
 import {autoUpdater} from 'electron-updater';
 
-const version = app.getVersion();
 
 let template = {
   label: 'Help',
   role: 'help',
-  submenu: [{
+  submenu: []
+};
+
+function addUpdateMenuItems (items, position) {
+  const version = app.getVersion();
+  if (process.mas) return;
+
+  let updateItems = [{
     label: `Version ${version}`,
     enabled: false
   }, {
@@ -14,16 +20,7 @@ let template = {
     type: 'checkbox',
     checked: false,
     key: 'autoUpdate'
-    // click: (elem) => {
-    //   console.log("clicked?", elem.checked, elem);
-    // }
-  }]
-};
-
-function addUpdateMenuItems (items, position) {
-  if (process.mas) return;
-
-  let updateItems = [{
+  }, {
     label: 'Checking for Update',
     enabled: false,
     visible: false,
