@@ -2,7 +2,7 @@
   "name": "electron-boilerplate",
   "productName": "Electron Boilerplate",
   "description": "Starter for your Electron application",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "B. Barszczewski",
   "copyright": "© 2017, B. Barszczewski.",
   "repository": "https://github.com/zuljin-bartek/electron-boilerplate",
